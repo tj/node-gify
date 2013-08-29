@@ -67,9 +67,8 @@ function gify(input, output, opts, fn) {
     // convert to gif
     var cmd = ['ffmpeg'];
     cmd.push('-i', input);
-    !opts.hq && cmd.push('-pix_fmt', 'rgb24');
     cmd.push('-filter:v', 'scale=' + scale);
-    opts.hq && cmd.push('-r', '10');
+    cmd.push('-r', '10');
     cmd.push(tmp);
     cmd = escape(cmd);
 
