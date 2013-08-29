@@ -20,6 +20,7 @@ module.exports = gify;
  *  - `width` max width [500]
  *  - `height` max height [none]
  *  - `delay` between frames [0]
+ *  - `hq` higher quality [false]
  *
  * @param {Type} name
  * @return {Type}
@@ -44,33 +45,50 @@ function gify(input, output, opts, fn) {
 
   // scale
   var scale;
-  if (w) scale = w + ':-1'
-  else if (h) scale = '-1:' + h
+  if (w) scale = w + ':-1';
+  else if (h) scale = '-1:' + h;
   else scale = '500:-1';
 
-  // tmpfile
-  var tmp = '/tmp/' + uid(10) + '.gif';
-  debug('options %j', opts);
+  // tmpfile(s)
+  var id = uid(10),
+    tmp  = '/tmp/' + id;
+  if (opts.hq) {
+    tmp += '%04d.png';
+  } else {
+    tmp += '.gif';
+    debug('options %j', opts);
+  }
 
   // convert to gif
   var cmd = ['ffmpeg'];
   cmd.push('-i', input);
-  cmd.push('-pix_fmt', 'rgb24');
+  !opts.hq && cmd.push('-pix_fmt', 'rgb24');
   cmd.push('-filter:v', 'scale=' + scale);
+  opts.hq && cmd.push('-r', '10');
   cmd.push(tmp);
   cmd = escape(cmd);
 
   debug('exec `%s`', cmd);
   exec(cmd, function(err){
     if (err) return fn(err);
-    
-    // optimize
-    var cmd = ['gifsicle'];
-    cmd.push('--delay', String(opts.delay || 0));
-    cmd.push(tmp);
-    cmd = escape(cmd);
+    var cmd;
 
-    cmd += ' > ' + output;
+    if (opts.hq) {
+      cmd = ['convert'];
+      cmd.push('-delay', String(opts.delay || 0));
+      cmd.push('-loop', '0');
+      cmd.push('/tmp/' + id + '*.png');
+      cmd.push(output);
+      cmd = escape(cmd);
+    } else {
+      // optimize
+      cmd = ['gifsicle'];
+      cmd.push('--delay', String(opts.delay || 0));
+      cmd.push(tmp);
+      cmd = escape(cmd);
+      cmd += ' > ' + output;
+    }
+
     debug('exec `%s`', cmd);
     exec(cmd, fn);
   });
