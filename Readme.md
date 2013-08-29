@@ -3,20 +3,15 @@
 
   Turn videos into gifs.
 
-  **Default**
-
-  ![](http://i.cloudup.com/0TPHizFRLL.gif)
-
-  **High Quality**
-
   ![](http://i.cloudup.com/0lDQXlLZNS.gif)
+
 ## Installation
 
 ```
 $ npm install gify
 ```
 
-  Also requires `ffmpeg` and `gifsicle` or `imagemagick` for higher quality.
+  Also requires `ffmpeg` and (`imagemagick` or `graphicsmagick`).
 
 ## Example
 
@@ -32,8 +27,7 @@ gify('out.mp4', 'out.gif', function(err){
 
 ```js
 var opts = {
-  width: 300,
-  hq: true
+  width: 300
 };
 
 gify('out.mp4', 'out.gif', opts, function(err){
@@ -46,7 +40,6 @@ gify('out.mp4', 'out.gif', opts, function(err){
  - `width` max width [500]
  - `height` max height [none]
  - `delay` between frames [0]
- - `hq` higher quality [false]
 
 # License
 

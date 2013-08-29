@@ -20,7 +20,6 @@ module.exports = gify;
  *  - `width` max width [500]
  *  - `height` max height [none]
  *  - `delay` between frames [0]
- *  - `hq` higher quality [false]
  *
  * @param {Type} name
  * @return {Type}
@@ -50,14 +49,9 @@ function gify(input, output, opts, fn) {
   else scale = '500:-1';
 
   // tmpfile(s)
-  var id = uid(10),
-    tmp  = '/tmp/' + id;
-  if (opts.hq) {
-    tmp += '%04d.png';
-  } else {
-    tmp += '.gif';
-    debug('options %j', opts);
-  }
+  var id = uid(10);
+  var tmp  = '/tmp/' + id + '%04d.png';
+  debug('options %j', opts);
 
   // convert to gif
   var cmd = ['ffmpeg'];
@@ -73,21 +67,12 @@ function gify(input, output, opts, fn) {
     if (err) return fn(err);
     var cmd;
 
-    if (opts.hq) {
-      cmd = ['convert'];
-      cmd.push('-delay', String(opts.delay || 0));
-      cmd.push('-loop', '0');
-      cmd.push('/tmp/' + id + '*.png');
-      cmd.push(output);
-      cmd = escape(cmd);
-    } else {
-      // optimize
-      cmd = ['gifsicle'];
-      cmd.push('--delay', String(opts.delay || 0));
-      cmd.push(tmp);
-      cmd = escape(cmd);
-      cmd += ' > ' + output;
-    }
+    cmd = ['convert'];
+    cmd.push('-delay', String(opts.delay || 0));
+    cmd.push('-loop', '0');
+    cmd.push('/tmp/' + id + '*.png');
+    cmd.push(output);
+    cmd = escape(cmd);
 
     debug('exec `%s`', cmd);
     exec(cmd, fn);
