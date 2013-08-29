@@ -6,6 +6,7 @@
 var exec = require('child_process').exec;
 var escape = require('shell-escape');
 var debug = require('debug')('gify');
+var mkdirp = require('mkdirp');
 var uid = require('uid2');
 
 /**
@@ -50,31 +51,42 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  var tmp  = '/tmp/' + id + '%04d.png';
-  debug('options %j', opts);
+  var dir = '/tmp/' + id;
+  var tmp  = dir + '/%04d.png';
 
-  // convert to gif
-  var cmd = ['ffmpeg'];
-  cmd.push('-i', input);
-  !opts.hq && cmd.push('-pix_fmt', 'rgb24');
-  cmd.push('-filter:v', 'scale=' + scale);
-  opts.hq && cmd.push('-r', '10');
-  cmd.push(tmp);
-  cmd = escape(cmd);
+  function gc(err) {
+    debug('remove %s', dir);
+    exec('rm -fr ' + dir);
+    fn(err);
+  }
 
-  debug('exec `%s`', cmd);
-  exec(cmd, function(err){
+  debug('mkdir -p %s', dir);
+  mkdirp(dir, function(err){
     if (err) return fn(err);
-    var cmd;
-
-    cmd = ['gm', 'convert'];
-    cmd.push('-delay', String(opts.delay || 0));
-    cmd.push('-loop', '0');
-    cmd.push('/tmp/' + id + '*.png');
-    cmd.push(output);
+    
+    // convert to gif
+    var cmd = ['ffmpeg'];
+    cmd.push('-i', input);
+    !opts.hq && cmd.push('-pix_fmt', 'rgb24');
+    cmd.push('-filter:v', 'scale=' + scale);
+    opts.hq && cmd.push('-r', '10');
+    cmd.push(tmp);
     cmd = escape(cmd);
 
     debug('exec `%s`', cmd);
-    exec(cmd, fn);
+    exec(cmd, function(err){
+      if (err) return gc(err);
+      var cmd;
+
+      cmd = ['gm', 'convert'];
+      cmd.push('-delay', String(opts.delay || 0));
+      cmd.push('-loop', '0');
+      cmd.push('/tmp/' + id + '/*.png');
+      cmd.push(output);
+      cmd = escape(cmd);
+
+      debug('exec `%s`', cmd);
+      exec(cmd, gc);
+    });
   });
 }
