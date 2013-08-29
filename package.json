@@ -1,6 +1,6 @@
 {
   "name": "gify",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": "visionmedia/gify",
   "description": "Convert videos to animated gifs",
   "keywords": [
