@@ -11,7 +11,7 @@
 $ npm install gify
 ```
 
-  Also requires `ffmpeg` and (`imagemagick` or `graphicsmagick`).
+  Also requires `ffmpeg` and `graphicsmagic`.
 
 ## Example
 

@@ -67,7 +67,7 @@ function gify(input, output, opts, fn) {
     if (err) return fn(err);
     var cmd;
 
-    cmd = ['convert'];
+    cmd = ['gm', 'convert'];
     cmd.push('-delay', String(opts.delay || 0));
     cmd.push('-loop', '0');
     cmd.push('/tmp/' + id + '*.png');
