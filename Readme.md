@@ -39,7 +39,7 @@ gify('out.mp4', 'out.gif', opts, function(err){
 
  - `width` max width [500]
  - `height` max height [none]
- - `delay` between frames [0]
+ - `delay` between frames [auto]
  - `rate` frame rate [10]
 
 # License

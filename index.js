@@ -43,6 +43,13 @@ function gify(input, output, opts, fn) {
   // dims
   var w = opts.width;
   var h = opts.height;
+  var rate = opts.rate || 10;
+  var delay = opts.delay || 'auto';
+
+  // auto delay
+  if ('auto' == delay) {
+    delay = 1000 / rate / 10 | 0;
+  }
 
   // scale
   var scale;
@@ -69,7 +76,7 @@ function gify(input, output, opts, fn) {
     var cmd = ['ffmpeg'];
     cmd.push('-i', input);
     cmd.push('-filter:v', 'scale=' + scale);
-    cmd.push('-r', opts.rate || '10');
+    cmd.push('-r', String(rate));
     cmd.push(tmp);
     cmd = escape(cmd);
 
@@ -79,7 +86,7 @@ function gify(input, output, opts, fn) {
       var cmd;
 
       cmd = ['gm', 'convert'];
-      cmd.push('-delay', String(opts.delay || 0));
+      cmd.push('-delay', String(delay || 0));
       cmd.push('-loop', '0');
       cmd.push('/tmp/' + id + '/*.png');
       cmd.push(output);
