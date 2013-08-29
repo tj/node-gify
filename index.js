@@ -21,6 +21,7 @@ module.exports = gify;
  *  - `width` max width [500]
  *  - `height` max height [none]
  *  - `delay` between frames [0]
+ *  - `rate` frame rate [10]
  *
  * @param {Type} name
  * @return {Type}
@@ -68,7 +69,7 @@ function gify(input, output, opts, fn) {
     var cmd = ['ffmpeg'];
     cmd.push('-i', input);
     cmd.push('-filter:v', 'scale=' + scale);
-    cmd.push('-r', '10');
+    cmd.push('-r', opts.rate || '10');
     cmd.push(tmp);
     cmd = escape(cmd);
 
