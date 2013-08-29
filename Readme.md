@@ -11,6 +11,8 @@
 $ npm install gify
 ```
 
+  Also requires `ffmpeg` and `gifsicle`.
+
 ## Example
 
   Without options:

@@ -1,9 +1,9 @@
 {
-  "name": "",
+  "name": "gify",
   "version": "0.0.1",
-  "repo": "visionmedia/",
-  "description": "",
-  "keywords": [],
+  "repo": "visionmedia/gify",
+  "description": "Convert videos to animated gifs",
+  "keywords": ["gif", "video", "ffmpeg", "gifsicle"],
   "dependencies": {
     "shell-escape": "0.0.0",
     "debug": "*",
