@@ -79,8 +79,8 @@ function gify(input, output, opts, fn) {
     cmd.push('-i', input);
     cmd.push('-filter:v', 'scale=' + scale);
     cmd.push('-r', String(rate));
-    opts.start && cmd.push('-ss', String(opts.start));
-    opts.duration && cmd.push('-t', String(opts.duration));
+    if (opts.start) cmd.push('-ss', String(opts.start));
+    if (opts.duration) cmd.push('-t', String(opts.duration));
     cmd.push(tmp);
     cmd = escape(cmd);
 
