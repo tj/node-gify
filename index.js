@@ -22,6 +22,8 @@ module.exports = gify;
  *  - `height` max height [none]
  *  - `delay` between frames [0]
  *  - `rate` frame rate [10]
+ *  - `start` start position in seconds [0]
+ *  - `duration` length of video to convert [auto]
  *
  * @param {Type} name
  * @return {Type}
@@ -77,6 +79,8 @@ function gify(input, output, opts, fn) {
     cmd.push('-i', input);
     cmd.push('-filter:v', 'scale=' + scale);
     cmd.push('-r', String(rate));
+    opts.start && cmd.push('-ss', String(opts.start));
+    opts.duration && cmd.push('-t', String(opts.duration));
     cmd.push(tmp);
     cmd = escape(cmd);
 
