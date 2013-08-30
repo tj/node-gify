@@ -15,7 +15,8 @@ var fs = require('fs');
 //});
 
 var opts = {
-  height: 300
+  height: 300,
+  rate: 10
 };
 
 console.time('convert');

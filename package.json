@@ -1,18 +1,26 @@
 {
   "name": "gify",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": "visionmedia/gify",
   "description": "Convert videos to animated gifs",
-  "keywords": ["gif", "video", "ffmpeg", "gifsicle"],
+  "keywords": [
+    "gif",
+    "video",
+    "ffmpeg",
+    "gifsicle"
+  ],
   "dependencies": {
     "shell-escape": "0.0.0",
     "debug": "*",
-    "uid2": "0.0.3"
+    "uid2": "0.0.3",
+    "mkdirp": "~0.3.5"
   },
   "devDependencies": {
     "mocha": "*",
     "should": "*"
   },
-  "files": ["index.js"],
+  "files": [
+    "index.js"
+  ],
   "license": "MIT"
 }

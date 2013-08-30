@@ -6,6 +6,7 @@
 var exec = require('child_process').exec;
 var escape = require('shell-escape');
 var debug = require('debug')('gify');
+var mkdirp = require('mkdirp');
 var uid = require('uid2');
 
 /**
@@ -20,7 +21,7 @@ module.exports = gify;
  *  - `width` max width [500]
  *  - `height` max height [none]
  *  - `delay` between frames [0]
- *  - `hq` higher quality [false]
+ *  - `rate` frame rate [10]
  *
  * @param {Type} name
  * @return {Type}
@@ -42,6 +43,13 @@ function gify(input, output, opts, fn) {
   // dims
   var w = opts.width;
   var h = opts.height;
+  var rate = opts.rate || 10;
+  var delay = opts.delay || 'auto';
+
+  // auto delay
+  if ('auto' == delay) {
+    delay = 1000 / rate / 10 | 0;
+  }
 
   // scale
   var scale;
@@ -50,46 +58,42 @@ function gify(input, output, opts, fn) {
   else scale = '500:-1';
 
   // tmpfile(s)
-  var id = uid(10),
-    tmp  = '/tmp/' + id;
-  if (opts.hq) {
-    tmp += '%04d.png';
-  } else {
-    tmp += '.gif';
-    debug('options %j', opts);
+  var id = uid(10);
+  var dir = '/tmp/' + id;
+  var tmp  = dir + '/%04d.png';
+
+  function gc(err) {
+    debug('remove %s', dir);
+    exec('rm -fr ' + dir);
+    fn(err);
   }
 
-  // convert to gif
-  var cmd = ['ffmpeg'];
-  cmd.push('-i', input);
-  !opts.hq && cmd.push('-pix_fmt', 'rgb24');
-  cmd.push('-filter:v', 'scale=' + scale);
-  opts.hq && cmd.push('-r', '10');
-  cmd.push(tmp);
-  cmd = escape(cmd);
-
-  debug('exec `%s`', cmd);
-  exec(cmd, function(err){
+  debug('mkdir -p %s', dir);
+  mkdirp(dir, function(err){
     if (err) return fn(err);
-    var cmd;
-
-    if (opts.hq) {
-      cmd = ['convert'];
-      cmd.push('-delay', String(opts.delay || 0));
-      cmd.push('-loop', '0');
-      cmd.push('/tmp/' + id + '*.png');
-      cmd.push(output);
-      cmd = escape(cmd);
-    } else {
-      // optimize
-      cmd = ['gifsicle'];
-      cmd.push('--delay', String(opts.delay || 0));
-      cmd.push(tmp);
-      cmd = escape(cmd);
-      cmd += ' > ' + output;
-    }
+    
+    // convert to gif
+    var cmd = ['ffmpeg'];
+    cmd.push('-i', input);
+    cmd.push('-filter:v', 'scale=' + scale);
+    cmd.push('-r', String(rate));
+    cmd.push(tmp);
+    cmd = escape(cmd);
 
     debug('exec `%s`', cmd);
-    exec(cmd, fn);
+    exec(cmd, function(err){
+      if (err) return gc(err);
+      var cmd;
+
+      cmd = ['gm', 'convert'];
+      cmd.push('-delay', String(delay || 0));
+      cmd.push('-loop', '0');
+      cmd.push('/tmp/' + id + '/*.png');
+      cmd.push(output);
+      cmd = escape(cmd);
+
+      debug('exec `%s`', cmd);
+      exec(cmd, gc);
+    });
   });
 }
