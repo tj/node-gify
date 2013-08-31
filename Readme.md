@@ -35,6 +35,19 @@ gify('out.mp4', 'out.gif', opts, function(err){
 });
 ```
 
+  From image sequence:
+
+```js
+var opts = {
+  width: 300,
+  sequence: true
+};
+
+gify('frames/*', 'out.gif', opts, function(err){
+  if (err) throw err;
+});
+```
+
 ## Options
 
  - `width` max width [500]
@@ -43,6 +56,7 @@ gify('out.mp4', 'out.gif', opts, function(err){
  - `rate` frame rate [10]
  - `start` start position in seconds or hh:mm:ss[.xxx] [0]
  - `duration` length of video to convert in seconds or hh:mm:ss[.xxx] [auto]
+ - `sequence` source is a sequence of images [false]
 
 # License
 
