@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+'use strict';
+
+/**
+ * Module dependencies.
+ */
+
+var gify  = require('../index'),
+  program = require('commander'),
+  pkg     = require('../package'),
+  infile,
+  outfile,
+  options;
+
+// CLI
+
+program
+  .version(pkg.version)
+  .usage('[options] infile outfile')
+  .option('-w, --width [width]', 'max width [500]')
+  .option('-h, --height [height]', 'max height [none]')
+  .option('-d, --delay [delay]', 'delay between frames [auto]')
+  .option('-r, --rate [rate]', 'frame rate [10]')
+  .option('-s, --start [time]', 'start position in seconds or hh:mm:ss[.xxx] format [0]')
+  .option('-D, --duration [length]', 'length of video to convert in seconds or hh:mm:ss[.xxx] format [10]')
+  .parse(process.argv);
+
+if (program.args.length < 2) {
+  program.help();
+}
+
+infile = program.args.shift();
+outfile = program.args.shift();
+
+options = {
+  width: program.width,
+  height: program.height,
+  delay: program.delay,
+  rate: program.rate,
+  start: program.start,
+  duration: program.duration
+};
+
+gify(infile, outfile, options, function(err) {
+  if (err) { throw err; }
+  console.log('Done.');
+});
