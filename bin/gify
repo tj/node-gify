@@ -5,14 +5,11 @@
  * Module dependencies.
  */
 
-var gify  = require('../index'),
-  program = require('commander'),
-  pkg     = require('../package'),
-  infile,
-  outfile,
-  options;
+var program = require('commander');
+var gify  = require('../index');
+var pkg = require('../package');
 
-// CLI
+// options
 
 program
   .version(pkg.version)
@@ -29,10 +26,10 @@ if (program.args.length < 2) {
   program.help();
 }
 
-infile = program.args.shift();
-outfile = program.args.shift();
+var src = program.args.shift();
+var dst = program.args.shift();
 
-options = {
+var opts = {
   width: program.width,
   height: program.height,
   delay: program.delay,
@@ -41,7 +38,7 @@ options = {
   duration: program.duration
 };
 
-gify(infile, outfile, options, function(err) {
+gify(src, dst, opts, function(err) {
   if (err) { throw err; }
   console.log('Done.');
 });
