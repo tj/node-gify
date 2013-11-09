@@ -8,6 +8,7 @@ var escape = require('shell-escape');
 var debug = require('debug')('gify');
 var mkdirp = require('mkdirp');
 var uid = require('uid2');
+var path = require('path');
 
 /**
  * Expose `gify()`.
@@ -64,6 +65,18 @@ function gify(input, output, opts, fn) {
   var dir = '/tmp/' + id;
   var tmp  = dir + '/%04d.png';
 
+  // escape paths
+  input = escape([input]);
+  output = escape([output]);
+
+  // normalize
+  if (process.platform === 'win32') {
+    dir = path.normalize(process.env.HOMEDRIVE + dir);
+    tmp = path.normalize(process.env.HOMEDRIVE + tmp);
+    input = input.replace(/^'|'$/g, '"');
+    output = output.replace(/^'|'$/g, '"');
+  }
+
   function gc(err) {
     debug('remove %s', dir);
     exec('rm -fr ' + dir);
@@ -82,19 +95,20 @@ function gify(input, output, opts, fn) {
     if (opts.start) cmd.push('-ss', String(opts.start));
     if (opts.duration) cmd.push('-t', String(opts.duration));
     cmd.push(tmp);
-    cmd = escape(cmd);
+    cmd = cmd.join(' ');
 
     debug('exec `%s`', cmd);
     exec(cmd, function(err){
       if (err) return gc(err);
       var cmd;
+      var wildcard = dir + path.normalize('/*.png');
 
       cmd = ['gm', 'convert'];
       cmd.push('-delay', String(delay || 0));
       cmd.push('-loop', '0');
-      cmd.push('/tmp/' + id + '/*.png');
+      cmd.push(wildcard);
       cmd.push(output);
-      cmd = escape(cmd);
+      cmd = cmd.join(' ');
 
       debug('exec `%s`', cmd);
       exec(cmd, gc);
