@@ -62,17 +62,14 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  var dir = '/tmp/' + id;
-  var tmp  = dir + '/%04d.png';
+  var dir = path.resolve('/tmp/' + id);
+  var tmp  = path.join(dir, '/%04d.png');
 
   // escape paths
   input = escape([input]);
   output = escape([output]);
-
   // normalize
   if (process.platform === 'win32') {
-    dir = path.normalize(process.env.HOMEDRIVE + dir);
-    tmp = path.normalize(process.env.HOMEDRIVE + tmp);
     input = input.replace(/^'|'$/g, '"');
     output = output.replace(/^'|'$/g, '"');
   }
@@ -101,7 +98,7 @@ function gify(input, output, opts, fn) {
     exec(cmd, function(err){
       if (err) return gc(err);
       var cmd;
-      var wildcard = dir + path.normalize('/*.png');
+      var wildcard = path.join(dir, '/*.png');
 
       cmd = ['gm', 'convert'];
       cmd.push('-delay', String(delay || 0));
