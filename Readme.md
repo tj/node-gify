@@ -1,4 +1,3 @@
-
 # gify
 
   Turn videos into gifs.
@@ -11,7 +10,7 @@
 $ npm install gify
 ```
 
-  Also requires `ffmpeg` and `graphicsmagic`.
+  Also requires `ffmpeg` and `graphicsmagick`.
 
 ## Example
 
