@@ -20,6 +20,7 @@ program
   .option('-r, --rate [rate]', 'frame rate [10]')
   .option('-s, --start [time]', 'start position in seconds or hh:mm:ss[.xxx] format [0]')
   .option('-D, --duration [length]', 'length of video to convert in seconds or hh:mm:ss[.xxx] format [10]')
+  .option('-S, --sequence', 'source is a sequence of images [false]')
   .parse(process.argv);
 
 if (program.args.length < 2) {
@@ -35,7 +36,8 @@ var opts = {
   delay: program.delay,
   rate: program.rate,
   start: program.start,
-  duration: program.duration
+  duration: program.duration,
+  sequence: program.sequence
 };
 
 gify(src, dst, opts, function(err) {

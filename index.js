@@ -24,6 +24,7 @@ module.exports = gify;
  *  - `rate` frame rate [10]
  *  - `start` start position in seconds [0]
  *  - `duration` length of video to convert [auto]
+ *  - `sequence` source is a sequence of images [false]
  *
  * @param {Type} name
  * @return {Type}
@@ -70,34 +71,49 @@ function gify(input, output, opts, fn) {
     fn(err);
   }
 
-  debug('mkdir -p %s', dir);
-  mkdirp(dir, function(err){
-    if (err) return fn(err);
-    
-    // convert to gif
-    var cmd = ['ffmpeg'];
-    cmd.push('-i', input);
-    cmd.push('-filter:v', 'scale=' + scale);
-    cmd.push('-r', String(rate));
-    if (opts.start) cmd.push('-ss', String(opts.start));
-    if (opts.duration) cmd.push('-t', String(opts.duration));
-    cmd.push(tmp);
-    cmd = escape(cmd);
-
-    debug('exec `%s`', cmd);
-    exec(cmd, function(err){
-      if (err) return gc(err);
-      var cmd;
-
-      cmd = ['gm', 'convert'];
-      cmd.push('-delay', String(delay || 0));
-      cmd.push('-loop', '0');
+  function convert(cb) {
+    var cmd;
+    cmd = ['gm', 'convert'];
+    cmd.push('-delay', String(delay || 0));
+    cmd.push('-loop', '0');
+    if (opts.sequence) {
+      if (w) {
+        cmd.push('-scale', String(w));
+      } else if (h) {
+        cmd.push('-scale', 'x' + h);
+      }
+      cmd.push(input);
+    } else {
       cmd.push('/tmp/' + id + '/*.png');
-      cmd.push(output);
+    }
+    cmd.push(output);
+    cmd = escape(cmd);
+    debug('exec `%s`', cmd);
+    exec(cmd, cb);
+  }
+
+  if (opts.sequence) {
+    convert(fn);
+  } else {
+    debug('mkdir -p %s', dir);
+    mkdirp(dir, function(err){
+      if (err) return fn(err);
+
+      // convert to gif
+      var cmd = ['ffmpeg'];
+      cmd.push('-i', input);
+      cmd.push('-filter:v', 'scale=' + scale);
+      cmd.push('-r', String(rate));
+      if (opts.start) cmd.push('-ss', String(opts.start));
+      if (opts.duration) cmd.push('-t', String(opts.duration));
+      cmd.push(tmp);
       cmd = escape(cmd);
 
       debug('exec `%s`', cmd);
-      exec(cmd, gc);
+      exec(cmd, function(err){
+        if (err) return gc(err);
+        convert(gc);
+      });
     });
-  });
+  }
 }
