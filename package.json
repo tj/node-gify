@@ -9,6 +9,9 @@
     "ffmpeg",
     "gifsicle"
   ],
+  "maintainers": [
+    "jbnicolai <joshua@jbna.nl>"
+  ],
   "dependencies": {
     "shell-escape": "0.0.0",
     "debug": "*",
