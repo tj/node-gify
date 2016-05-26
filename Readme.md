@@ -43,6 +43,9 @@ gify('out.mp4', 'out.gif', opts, function(err){
  - `start` start position in seconds or hh:mm:ss[.xxx] [0]
  - `duration` length of video to convert in seconds or hh:mm:ss[.xxx] [auto]
 
+## Notice
+- This module doesn't support *Windows*, because it uses shell-escape, which doesn't support Windows till now.
+
 # License
 
   MIT
