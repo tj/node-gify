@@ -9,6 +9,7 @@ var debug = require('debug')('gify');
 var mkdirp = require('mkdirp');
 var uid = require('uid2');
 var path = require('path');
+var os = require('os');
 
 /**
  * Expose `gify()`.
@@ -62,8 +63,7 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  const tmpFolder = process.platform === 'win32' ? '%temp%' : '/tmp/';
-  var dir = path.resolve(tmpFolder + id);
+  var dir = path.resolve(os.tmpdir() + id);
   var tmp  = path.join(dir, '/%04d.png');
 
   // escape paths
