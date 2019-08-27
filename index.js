@@ -63,7 +63,8 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  var dir = path.resolve(os.tmpdir() + '/' + id);
+  const tmpDir = os.tmpdir() + (process.platform === 'win32') ? '\\' : '/'; 
+  var dir = path.resolve(tmpDir + id);
   var tmp  = path.join(dir, '/%04d.png');
 
   // escape paths
