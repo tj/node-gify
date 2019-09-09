@@ -15,7 +15,22 @@ var os = require('os');
  * Expose `gify()`.
  */
 
-module.exports = gify;
+module.exports = {
+  gify,
+  setFFMPEGPath,
+  setGMPath
+};
+
+let ffmpegPath = 'ffmpeg';
+let gmPath = 'gm';
+
+function setFFMPEGPath(path) {
+  ffmpegPath = path;
+}
+
+function setGMPath(path) {
+  gmPath = path;
+}
 
 /**
  * Convert `input` file to `output` gif with the given `opts`:
@@ -87,7 +102,7 @@ function gify(input, output, opts, fn) {
     if (err) return fn(err);
     
     // convert to gif
-    var cmd = ['ffmpeg'];
+    var cmd = [ffmpegPath];
     cmd.push('-i', input);
     cmd.push('-filter:v', 'scale=' + scale);
     cmd.push('-r', String(rate));
@@ -102,7 +117,7 @@ function gify(input, output, opts, fn) {
       var cmd;
       var wildcard = path.join(dir, '/*.png');
 
-      cmd = ['gm', 'convert'];
+      cmd = [gmPath, 'convert'];
       cmd.push('-delay', String(delay || 0));
       cmd.push('-loop', '0');
       cmd.push(wildcard);
