@@ -78,9 +78,9 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  const tmpDir = os.tmpdir() + (process.platform === 'win32') ? '\\' : '/'; 
-  var dir = path.resolve(tmpDir + id);
-  var tmp  = path.join(dir, '/%04d.png');
+  const dir = path.join(path.join(os.tmpdir(), 'gify'), id);
+  console.log("Gify Temp Directory", dir);
+  var tmp  = path.join(dir, '%04d.png');
 
   // escape paths
   input = escape([input]);
