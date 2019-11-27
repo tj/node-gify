@@ -9,7 +9,7 @@ var debug = require('debug')('gify');
 var mkdirp = require('mkdirp');
 var uid = require('uid2');
 var path = require('path');
-var os = require('os');
+const tempDirectory = require('temp-dir');
 
 /**
  * Expose `gify()`.
@@ -78,7 +78,7 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  const dir = path.join(path.join(os.tmpdir(), 'gify'), id);
+  const dir = path.join(path.join(tempDirectory, 'gify'), id);
   console.log("Gify Temp Directory", dir);
   var tmp  = path.join(dir, '%04d.png');
 
@@ -100,7 +100,7 @@ function gify(input, output, opts, fn) {
   debug('mkdir -p %s', dir);
   mkdirp(dir, function(err){
     if (err) return fn(err);
-    
+
     // convert to gif
     var cmd = [ffmpegPath];
     cmd.push('-i', input);
