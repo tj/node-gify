@@ -46,6 +46,14 @@ gify('out.mp4', 'out.gif', opts, function(err){
  - `rate` frame rate [10]
  - `start` start position in seconds or hh:mm:ss[.xxx] [0]
  - `duration` length of video to convert in seconds or hh:mm:ss[.xxx] [auto]
+ - `transpose` rotation of video default [transpose=0]
+ ``` 
+  The possible values ​​to `transpose` are:
+    0=90CounterCLockwise and Vertical Flip(default)
+    1=90Clockwise
+    2=90CounterClockwise
+    3=90Clockwise and Vertical Flip
+```
 
 # License
 
