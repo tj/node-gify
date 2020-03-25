@@ -25,7 +25,12 @@ module.exports = gify;
  *  - `rate` frame rate [10]
  *  - `start` start position in seconds [0]
  *  - `duration` length of video to convert [auto]
- *
+ *  - `transpose` rotation of video default [transpose=0]
+ *      the possible values ​​to `transpose` are:
+ *        0=90CounterCLockwise and Vertical Flip  (default) 
+ *        1=90Clockwise 
+ *        2=90CounterClockwise 
+ *        3=90Clockwise and Vertical Flip
  * @param {Type} name
  * @return {Type}
  * @api public
@@ -48,6 +53,7 @@ function gify(input, output, opts, fn) {
   var h = opts.height;
   var rate = opts.rate || 10;
   var delay = opts.delay || 'auto';
+  var transpose = opts.transpose || 'transpose=0';
 
   // auto delay
   if ('auto' == delay) {
@@ -67,6 +73,7 @@ function gify(input, output, opts, fn) {
 
   // escape paths
   input = escape([input]);
+  transpose = escape([transpose])
   output = escape([output]);
   // normalize
   if (process.platform === 'win32') {
@@ -87,6 +94,7 @@ function gify(input, output, opts, fn) {
     // convert to gif
     var cmd = ['ffmpeg'];
     cmd.push('-i', input);
+    cmd.push('-vf', transpose);
     cmd.push('-filter:v', 'scale=' + scale);
     cmd.push('-r', String(rate));
     if (opts.start) cmd.push('-ss', String(opts.start));
