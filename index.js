@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var exec = require('child_process').exec;
+var execFile = require('child_process').execFile;
 var escape = require('shell-escape');
 var debug = require('debug')('gify');
 var mkdirp = require('mkdirp');
@@ -76,7 +76,7 @@ function gify(input, output, opts, fn) {
 
   function gc(err) {
     debug('remove %s', dir);
-    exec('rm -fr ' + dir);
+    execFile('rm', ['-fr ', dir]);
     fn(err);
   }
 
@@ -95,7 +95,8 @@ function gify(input, output, opts, fn) {
     cmd = cmd.join(' ');
 
     debug('exec `%s`', cmd);
-    exec(cmd, function(err){
+    cmd = cmd.split(' ')
+    execFile(cmd[0], cmd.splice(1), function(err){
       if (err) return gc(err);
       var cmd;
       var wildcard = path.join(dir, '/*.png');
@@ -108,7 +109,8 @@ function gify(input, output, opts, fn) {
       cmd = cmd.join(' ');
 
       debug('exec `%s`', cmd);
-      exec(cmd, gc);
+      cmd = cmd.split(' ')
+      execFile(cmd[0], cmd.splice(1), gc);
     });
   });
 }
