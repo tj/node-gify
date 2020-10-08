@@ -46,6 +46,7 @@ gify('out.mp4', 'out.gif', opts, function(err){
  - `rate` frame rate [10]
  - `start` start position in seconds or hh:mm:ss[.xxx] [0]
  - `duration` length of video to convert in seconds or hh:mm:ss[.xxx] [auto]
+ - `ignore_loop` `0` for infinite loop or`-1` not looping [-1]
 
 # License
 

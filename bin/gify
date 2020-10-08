@@ -16,10 +16,12 @@ program
   .usage('[options] infile outfile')
   .option('-w, --width [width]', 'max width [500]')
   .option('-h, --height [height]', 'max height [none]')
+  .option('-h, --height [height]', 'max height [none]')
   .option('-d, --delay [delay]', 'delay between frames [auto]')
   .option('-r, --rate [rate]', 'frame rate [10]')
   .option('-s, --start [time]', 'start position in seconds or hh:mm:ss[.xxx] format [0]')
   .option('-D, --duration [length]', 'length of video to convert in seconds or hh:mm:ss[.xxx] format [10]')
+  .option('-i, --ignore_loop [loop]', 'Loop'  )
   .parse(process.argv);
 
 if (program.args.length < 2) {
@@ -35,7 +37,8 @@ var opts = {
   delay: program.delay,
   rate: program.rate,
   start: program.start,
-  duration: program.duration
+  duration: program.duration,
+  ignore_loop: program.ignore_loop
 };
 
 gify(src, dst, opts, function(err) {
