@@ -9,12 +9,28 @@ var debug = require('debug')('gify');
 var mkdirp = require('mkdirp');
 var uid = require('uid2');
 var path = require('path');
+const tempDirectory = require('temp-dir');
 
 /**
  * Expose `gify()`.
  */
 
-module.exports = gify;
+module.exports = {
+  gify,
+  setFFMPEGPath,
+  setGMPath
+};
+
+let ffmpegPath = 'ffmpeg';
+let gmPath = 'gm';
+
+function setFFMPEGPath(path) {
+  ffmpegPath = path;
+}
+
+function setGMPath(path) {
+  gmPath = path;
+}
 
 /**
  * Convert `input` file to `output` gif with the given `opts`:
@@ -62,8 +78,9 @@ function gify(input, output, opts, fn) {
 
   // tmpfile(s)
   var id = uid(10);
-  var dir = path.resolve('/tmp/' + id);
-  var tmp  = path.join(dir, '/%04d.png');
+  const dir = path.join(path.join(tempDirectory, 'gify'), id);
+  console.log("Gify Temp Directory", dir);
+  var tmp  = path.join(dir, '%04d.png');
 
   // escape paths
   input = escape([input]);
@@ -83,9 +100,9 @@ function gify(input, output, opts, fn) {
   debug('mkdir -p %s', dir);
   mkdirp(dir, function(err){
     if (err) return fn(err);
-    
+
     // convert to gif
-    var cmd = ['ffmpeg'];
+    var cmd = [ffmpegPath];
     cmd.push('-i', input);
     cmd.push('-filter:v', 'scale=' + scale);
     cmd.push('-r', String(rate));
@@ -100,7 +117,7 @@ function gify(input, output, opts, fn) {
       var cmd;
       var wildcard = path.join(dir, '/*.png');
 
-      cmd = ['gm', 'convert'];
+      cmd = [gmPath, 'convert'];
       cmd.push('-delay', String(delay || 0));
       cmd.push('-loop', '0');
       cmd.push(wildcard);
